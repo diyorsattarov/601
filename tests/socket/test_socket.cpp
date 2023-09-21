@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <socket/socket.h>
 
 class SocketTest : public ::testing::Test {
@@ -7,7 +9,13 @@ protected:
     Socket socket;
 
     void SetUp() override {
-
+        std::thread socketThread([&]() {
+            EXPECT_TRUE(socket.create());
+            EXPECT_TRUE(socket.bind(8080));
+            EXPECT_TRUE(socket.listen());
+        });
+        socketThread.detach();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     void TearDown() override {
@@ -15,29 +23,11 @@ protected:
     }
 };
 
-TEST_F(SocketTest, CreateSocket) {
-    EXPECT_TRUE(socket.create());
-}
-
-TEST_F(SocketTest, BindSocket) {
-    EXPECT_TRUE(socket.create());
-    EXPECT_TRUE(socket.bind(8080));
-}
-
-TEST_F(SocketTest, ListenSocket) {
-    EXPECT_TRUE(socket.create()); 
-    EXPECT_TRUE(socket.bind(8080)); 
-    EXPECT_TRUE(socket.listen()); 
-}
-
 TEST_F(SocketTest, AcceptSocket) {
-    EXPECT_TRUE(socket.create()); 
-    EXPECT_TRUE(socket.bind(8080)); 
-    EXPECT_TRUE(socket.listen()); 
-
     int clientSocket = socket.accept();
     EXPECT_GE(clientSocket, 0);
 }
+
 
 TEST_F(SocketTest, ConnectSocket) {
     EXPECT_TRUE(socket.create());
