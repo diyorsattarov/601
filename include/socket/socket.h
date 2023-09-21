@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#include <Ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 #else
 #include <sys/socket.h>
@@ -17,11 +18,11 @@ public:
     ~Socket();
 
     bool create();
-    bool bind();
+    bool bind(int port);
     bool listen();
     
     int accept();
-    bool connect();
+    bool connect(const std::string& ipAddress, int port);
 
     void close();
 };
