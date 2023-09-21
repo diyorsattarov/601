@@ -30,6 +30,7 @@ git clone https://github.com/diyooor/cpp-cmake-template.git
 
 1. CMake
 1. GoogleTest
+1. ws2_32
 
 
 ### Installation
